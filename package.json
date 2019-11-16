@@ -1,5 +1,5 @@
 {
-  "name": "boiler_plate",
+  "name": "recetario-mongodb",
   "version": "1.0.0",
   "description": "",
   "main": "src/app.js",
@@ -10,13 +10,21 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "LauraRGZ",
+  "license": "MIT",
   "devDependencies": {
-    "@babel/cli": "^7.6.0",
-    "@babel/core": "^7.6.0",
-    "@babel/node": "^7.6.1",
-    "@babel/preset-env": "^7.6.0",
-    "nodemon": "^1.19.2"
-  }
+    "@babel/cli": "^7.7.0",
+    "@babel/core": "^7.7.2",
+    "@babel/node": "^7.7.0",
+    "@babel/preset-env": "^7.7.1",
+    "nodemon": "^1.19.4"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LauraRgz/Recetario-mongoDB.git"
+  },
+  "bugs": {
+    "url": "https://github.com/LauraRgz/Recetario-mongoDB/issues"
+  },
+  "homepage": "https://github.com/LauraRgz/Recetario-mongoDB#readme"
 }
