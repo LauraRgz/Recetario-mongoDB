@@ -26,5 +26,10 @@
   "bugs": {
     "url": "https://github.com/LauraRgz/Recetario-mongoDB/issues"
   },
-  "homepage": "https://github.com/LauraRgz/Recetario-mongoDB#readme"
+  "homepage": "https://github.com/LauraRgz/Recetario-mongoDB#readme",
+  "dependencies": {
+    "babel-polyfill": "^6.26.0",
+    "graphql-yoga": "^1.18.3",
+    "mongodb": "^3.3.4"
+  }
 }
