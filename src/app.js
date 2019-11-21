@@ -59,12 +59,12 @@ const runGraphQLServer = function(context) {
           addRecipe(title: String!, description: String!, author: ID!, ingredients: [ID]!): Recipe!
           addAuthor(name: String!, email: String!): Author!
           addIngredient(name: String!): Ingredient!
-        removeRecipe(id: ID!): String!
+          removeRecipe(id: ID!): String!
           removeAuthor(id: ID!): String!
-        removeIngredient(id: ID!): String!
-        updateAuthor(id: ID!, name: String, email: String): Author!
-        updateIngredient(id: ID!, name: String!): Ingredient!
-        updateRecipe(id: ID!, title: String, description: String, ingredients: [ID] ): Recipe!
+          removeIngredient(id: ID!): String!
+        updateAuthor(id: ID!, name: String, email: String): String!
+        updateIngredient(id: ID!, name: String!): String!
+        updateRecipe(id: ID!, title: String, description: String, ingredients: [ID] ): String!
     }
       `;
 
@@ -120,8 +120,7 @@ const runGraphQLServer = function(context) {
         const collection = db.collection("ingredients");
         const result = await collection.find({}).toArray();
         return result;
-      },
-
+      }
     },
 
     Recipe: {
@@ -158,9 +157,7 @@ const runGraphQLServer = function(context) {
         const { client } = ctx;
         const db = client.db("recipe-book");
         const collection = db.collection("recipes");
-        const result = await collection
-          .find({ author: authorID})
-          .toArray();
+        const result = await collection.find({ author: authorID }).toArray();
         return result;
       },
       id: (parent, args, ctx, info) => {
@@ -175,7 +172,9 @@ const runGraphQLServer = function(context) {
         const { client } = ctx;
         const db = client.db("recipe-book");
         const collection = db.collection("recipes");
-        const result = await collection.find({ ingredients: ingredientID }).toArray();
+        const result = await collection
+          .find({ ingredients: ingredientID })
+          .toArray();
         return result;
       },
       id: (parent, args, ctx, info) => {
@@ -246,25 +245,24 @@ const runGraphQLServer = function(context) {
         const db = client.db("recipe-book");
         const collectionAuthor = db.collection("authors");
         const collectionRecipe = db.collection("recipes");
-        
+
         const deleteRecipe = () => {
           return new Promise((resolve, reject) => {
-            const result = collectionRecipe.deleteMany({ author: ObjectID(id)});
+            const result = collectionRecipe.deleteMany({
+              author: ObjectID(id)
+            });
             resolve(result);
-          }
-        )};
-        
+          });
+        };
+
         const deleteAuthor = () => {
           return new Promise((resolve, reject) => {
             const result = collectionAuthor.deleteOne({ _id: ObjectID(id) });
             resolve(result);
-          }
-        )};
-        (async function(){
-          const asyncFunctions = [
-            deleteRecipe(),
-            deleteAuthor()
-          ];
+          });
+        };
+        (async function() {
+          const asyncFunctions = [deleteRecipe(), deleteAuthor()];
           const result = await Promise.all(asyncFunctions);
         })();
         return "ok";
@@ -279,21 +277,22 @@ const runGraphQLServer = function(context) {
 
         const deleteRecipe = () => {
           return new Promise((resolve, reject) => {
-            const result = collectionRecipe.deleteMany({ ingredients: ObjectID(id)});
+            const result = collectionRecipe.deleteMany({
+              ingredients: ObjectID(id)
+            });
             resolve(result);
-          }
-        )};
+          });
+        };
         const deleteIngredient = () => {
           return new Promise((resolve, reject) => {
-            const result = collectionIngredient.deleteOne({ _id: ObjectID(id) });
+            const result = collectionIngredient.deleteOne({
+              _id: ObjectID(id)
+            });
             resolve(result);
-          }
-        )};
-        (async function(){
-          const asyncFunctions = [
-            deleteRecipe(),
-            deleteIngredient()
-          ];
+          });
+        };
+        (async function() {
+          const asyncFunctions = [deleteRecipe(), deleteIngredient()];
           const result = await Promise.all(asyncFunctions);
         })();
 
@@ -305,12 +304,46 @@ const runGraphQLServer = function(context) {
         const { client } = ctx;
         const db = client.db("recipe-book");
         const collection = db.collection("recipes");
-       
+
         await collection.deleteOne({ _id: ObjectID(id) });
         return "ok";
       },
-      
-     
+
+      updateAuthor: async (parent, args, ctx, info) => {
+        const { id } = args;
+        const { client } = ctx;
+        const db = client.db("recipe-book");
+        const collection = db.collection("authors");
+
+        const updateName = () => {
+          if (args.name) {
+            return new Promise((resolve, reject) => {
+              const result = collection.updateOne(
+                { _id: ObjectID(id) },
+                { $set: {name: args.name} }
+              );
+              resolve(result);
+            });
+          }
+        };
+
+        const updateEmail = () => {
+          if (args.email) {
+            return new Promise((resolve, reject) => {
+              const result = collection.updateOne(
+                { _id: ObjectID(id) },
+                { $set: {email: args.email} }
+              );
+              resolve(result);
+            });
+          }
+        };
+        (async function() {
+          const asyncFunctions = [updateName(), updateEmail()];
+          await Promise.all(asyncFunctions);
+        })();
+        return "ok";
+      }
     }
   };
 
