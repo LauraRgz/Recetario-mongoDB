@@ -111,23 +111,10 @@ const runGraphQLServer = function(context) {
           const { client } = ctx;
           const db = client.db("recipe-book");
           let collection = db.collection("ingredients");
+          const ingredientsArray = parent.ingredients.map(obj => ObjectID(obj));
 
-          const result = parent.ingredients.map(element => {
-            const ingredientInfo = collection.findOne({_id: element});
-            console.log(ingredientInfo);
-            return ingredientInfo;
-          });
-          console.log(result);
+          const result = await collection.find({_id:{$in: ingredientsArray}}).toArray();
           return result;
-
-          // const result = parent.ingredients.map(async elem =>{
-          //   const ingredientInfo = await collection.findOne({_id: ObjectID(elem.id)});
-          //   console.log(ingredientInfo);
-          //   return ingredientInfo;
-          // });
-
-          console.log(result);
-          return result;        
         },
     },
 
