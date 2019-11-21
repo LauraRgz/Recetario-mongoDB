@@ -62,7 +62,7 @@ const runGraphQLServer = function(context) {
           removeRecipe(id: ID!): String!
           removeAuthor(id: ID!): String!
           removeIngredient(id: ID!): String!
-        updateAuthor(id: ID!, name: String, email: String): String!
+          updateAuthor(id: ID!, name: String, email: String): String!
         updateIngredient(id: ID!, name: String!): String!
         updateRecipe(id: ID!, title: String, description: String, ingredients: [ID] ): String!
     }
@@ -343,9 +343,22 @@ const runGraphQLServer = function(context) {
           await Promise.all(asyncFunctions);
         })();
         return "ok";
+      },
+      updateIngredient: async (parent, args, ctx, info) => {
+        const { id } = args;
+        const { client } = ctx;
+        const db = client.db("recipe-book");
+        const collection = db.collection("ingredients");
+        
+        await collection.updateOne(
+          { _id: ObjectID(id) },
+          { $set: {name: args.name} }
+        );
+        return "ok";
       }
     }
   };
+  
 
   const server = new GraphQLServer({ typeDefs, resolvers, context });
   const options = {
