@@ -60,7 +60,7 @@ const runGraphQLServer = function(context) {
           addAuthor(name: String!, email: String!): Author!
           addIngredient(name: String!): Ingredient!
         removeRecipe(id: ID!): String!
-        removeAuthor(id: ID!): String!
+          removeAuthor(id: ID!): String!
         removeIngredient(id: ID!): String!
         updateAuthor(id: ID!, name: String, email: String): Author!
         updateIngredient(id: ID!, name: String!): Ingredient!
@@ -246,12 +246,14 @@ const runGraphQLServer = function(context) {
         const db = client.db("recipe-book");
         const collectionAuthor = db.collection("authors");
         const collectionRecipe = db.collection("recipes");
+        
         const deleteRecipe = () => {
           return new Promise((resolve, reject) => {
             const result = collectionRecipe.findAndRemove({ author: ObjectID(id)});
             resolve(result);
           }
         )};
+        
         const deleteAuthor = () => {
           return new Promise((resolve, reject) => {
             const result = collectionAuthor.deleteOne({ _id: ObjectID(id) });
@@ -265,10 +267,6 @@ const runGraphQLServer = function(context) {
           ];
           const result = await Promise.all(asyncFunctions);
         })();
-        
-        // await collectionRecipe.findOneAndDelete({ author: authorID}).toArray();
-        
-        // const result = await collectionAuthor.deleteOne({ _id: ObjectID(id) });
         return "ok";
       },
 
@@ -276,12 +274,42 @@ const runGraphQLServer = function(context) {
         const { id } = args;
         const { client } = ctx;
         const db = client.db("recipe-book");
-        const collection = db.collection("ingredients");
-        const result = await collection.deleteOne({ _id: ObjectID(id) });
+        const collectionIngredient = db.collection("ingredients");
+        const collectionRecipe = db.collection("recipes");
+
+        const deleteRecipe = () => {
+          return new Promise((resolve, reject) => {
+            const result = collectionRecipe.findAndRemove({ ingredients: ObjectID(id)});
+            resolve(result);
+          }
+        )};
+        const deleteIngredient = () => {
+          return new Promise((resolve, reject) => {
+            const result = collectionIngredient.deleteOne({ _id: ObjectID(id) });
+            resolve(result);
+          }
+        )};
+        (async function(){
+          const asyncFunctions = [
+            deleteRecipe(),
+            deleteIngredient()
+          ];
+          const result = await Promise.all(asyncFunctions);
+        })();
+
+        //const result = await collection.deleteOne({ _id: ObjectID(id) });
         return "ok";
       },
-      removeRecipe: async (parent, args, ctx, info) => {},
-
+      removeRecipe: async (parent, args, ctx, info) => {
+        const { id } = args;
+        const { client } = ctx;
+        const db = client.db("recipe-book");
+        const collection = db.collection("recipes");
+       
+        await collection.deleteOne({ _id: ObjectID(id) });
+        return "ok";
+      },
+      
      
     }
   };
