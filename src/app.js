@@ -1,4 +1,4 @@
-import { MongoClient, ObjectID} from "mongodb";
+import { MongoClient, ObjectID } from "mongodb";
 import { GraphQLServer } from "graphql-yoga";
 
 import "babel-polyfill";
@@ -47,7 +47,7 @@ const runGraphQLServer = function(context) {
         recipes: [Recipe]
     }
     type Query{
-        getRecipe(id: ID!): Recipe
+          getRecipe(id: ID!): Recipe
         getAuthor(id: ID!): Author
         ingredient(id: ID!): Ingredient
         showRecipes: [Recipe]
@@ -56,9 +56,9 @@ const runGraphQLServer = function(context) {
 
     }
     type Mutation{
-        addRecipe(title: String!, description: String!, author: ID!, ingredients: [ID]!): Recipe!
-        addAuthor(name: String!, email: String!): Author!
-        addIngredient(name: String!): Ingredient!
+          addRecipe(title: String!, description: String!, author: ID!, ingredients: [ID]!): Recipe!
+          addAuthor(name: String!, email: String!): Author!
+          addIngredient(name: String!): Ingredient!
         removeRecipe(id: ID!): String!
         removeAuthor(id: ID!): String!
         removeIngredient(id: ID!): String!
@@ -70,63 +70,76 @@ const runGraphQLServer = function(context) {
 
   const resolvers = {
     Query: {
-        getAuthor: async (parent, args, ctx, info) => {
-            const { id } = args;
-            const { client } = ctx;
-            const db = client.db("recipe-book");
-            const collection = db.collection("authors");
-            const result = await collection.findOne({_id: ObjectID(id)});
-            return result;
-        },
+      getAuthor: async (parent, args, ctx, info) => {
+        const { id } = args;
+        const { client } = ctx;
+        const db = client.db("recipe-book");
+        const collection = db.collection("authors");
+        const result = await collection.findOne({ _id: ObjectID(id) });
+        return result;
+      },
 
-        getAuthors: async (parent, args, ctx, info) => {
-          const { client } = ctx;
-          const db = client.db("recipe-book");
-          const collection = db.collection("authors");
-          const result = await collection.find({}).toArray();
-          return result;
-        },
+      getAuthors: async (parent, args, ctx, info) => {
+        const { client } = ctx;
+        const db = client.db("recipe-book");
+        const collection = db.collection("authors");
+        const result = await collection.find({}).toArray();
+        return result;
+      },
 
-        getRecipe: async (parent, args, ctx, info) => {
-          const { id } = args;
-          const { client } = ctx;
-          const db = client.db("recipe-book");
-          const collection = db.collection("recipes");
-          const result = await collection.findOne({_id: ObjectID(id)});
-          return result;
-        },
+      getRecipe: async (parent, args, ctx, info) => {
+        const { id } = args;
+        const { client } = ctx;
+        const db = client.db("recipe-book");
+        const collection = db.collection("recipes");
+        const result = await collection.findOne({ _id: ObjectID(id) });
+        return result;
+      }
     },
 
     Recipe: {
-        author: async (parent, args, ctx, info) => {
-            const authorID = ObjectID(parent.author);
-            const { client } = ctx;
-            const db = client.db("recipe-book");
-            let collection = db.collection("authors");
-            let result = await collection.findOne({_id: ObjectID(authorID)});
+      author: async (parent, args, ctx, info) => {
+        const authorID = ObjectID(parent.author);
+        const { client } = ctx;
+        const db = client.db("recipe-book");
+        let collection = db.collection("authors");
+        let result = await collection.findOne({ _id: ObjectID(authorID) });
 
-            return result;
-        },
-        ingredients: async (parent, args, ctx, info) => {
-          const { client } = ctx;
-          const db = client.db("recipe-book");
-          let collection = db.collection("ingredients");
-          const ingredientsArray = parent.ingredients.map(obj => ObjectID(obj));
+        return result;
+      },
+      ingredients: async (parent, args, ctx, info) => {
+        const { client } = ctx;
+        const db = client.db("recipe-book");
+        let collection = db.collection("ingredients");
+        const ingredientsArray = parent.ingredients.map(obj => ObjectID(obj));
 
-          const result = await collection.find({_id:{$in: ingredientsArray}}).toArray();
-          return result;
-        },
+        const result = await collection
+          .find({ _id: { $in: ingredientsArray } })
+          .toArray();
+        return result;
+      }
     },
 
     Author: {
-      recipes:  async (parent, args, ctx, info) => {
+      recipes: async (parent, args, ctx, info) => {
+        const authorID = ObjectID(parent.id);
+        const { client } = ctx;
+        const db = client.db("recipe-book");
+        const collection = db.collection("recipes");
+        const result = await collection.find({ author: authorID }).toArray();
+        return result;
+      }
+    },
+
+    Ingredient: {
+      recipes: async (parent, args, ctx, info) => {
         const recipeID = ObjectID(parent.id);
         const { client } = ctx;
         const db = client.db("recipe-book");
         const collection = db.collection("recipes");
-        const result = await collection.find({_id: recipeID}).toArray();
+        const result = await collection.find({ _id: recipeID }).toArray();
         return result;
-      },
+      }
     },
 
     Mutation: {
@@ -137,7 +150,7 @@ const runGraphQLServer = function(context) {
         const db = client.db("recipe-book");
         const collection = db.collection("authors");
         const result = await collection.insertOne({ name, email });
-        const recipes =  [];
+        const recipes = [];
         return {
           name,
           email,
@@ -152,7 +165,7 @@ const runGraphQLServer = function(context) {
         const db = client.db("recipe-book");
         const collection = db.collection("ingredients");
         const result = await collection.insertOne({ name });
-        const recipes =  [];
+        const recipes = [];
         return {
           name,
           recipes,
@@ -161,20 +174,20 @@ const runGraphQLServer = function(context) {
       },
 
       removeAuthor: async (parent, args, ctx, info) => {
-        const {id } = args;
+        const { id } = args;
         const { client } = ctx;
         const db = client.db("recipe-book");
         const collection = db.collection("authors");
-        const result = await collection.deleteOne({ _id: ObjectID(id)});
+        const result = await collection.deleteOne({ _id: ObjectID(id) });
         return "ok";
       },
 
       removeIngredient: async (parent, args, ctx, info) => {
-        const {id } = args;
+        const { id } = args;
         const { client } = ctx;
         const db = client.db("recipe-book");
         const collection = db.collection("ingredients");
-        const result = await collection.deleteOne({ _id: ObjectID(id)});
+        const result = await collection.deleteOne({ _id: ObjectID(id) });
         return "ok";
       },
       removeRecipe: async (parent, args, ctx, info) => {},
@@ -183,11 +196,17 @@ const runGraphQLServer = function(context) {
         const { title, description, author, ingredients } = args;
         const date = new Date().getDate();
         const { client } = ctx;
-        
+
         const db = client.db("recipe-book");
         const collection = db.collection("recipes");
-        const result = await collection.insertOne({ title, description, author, ingredients, date });
-        
+        const result = await collection.insertOne({
+          title,
+          description,
+          author,
+          ingredients,
+          date
+        });
+
         return {
           id: result.ops[0]._id,
           title,
@@ -196,7 +215,6 @@ const runGraphQLServer = function(context) {
           ingredients,
           date
         };
-
       }
     }
   };
