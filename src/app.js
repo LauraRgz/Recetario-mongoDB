@@ -249,7 +249,7 @@ const runGraphQLServer = function(context) {
         
         const deleteRecipe = () => {
           return new Promise((resolve, reject) => {
-            const result = collectionRecipe.findAndRemove({ author: ObjectID(id)});
+            const result = collectionRecipe.deleteMany({ author: ObjectID(id)});
             resolve(result);
           }
         )};
@@ -279,7 +279,7 @@ const runGraphQLServer = function(context) {
 
         const deleteRecipe = () => {
           return new Promise((resolve, reject) => {
-            const result = collectionRecipe.findAndRemove({ ingredients: ObjectID(id)});
+            const result = collectionRecipe.deleteMany({ ingredients: ObjectID(id)});
             resolve(result);
           }
         )};
