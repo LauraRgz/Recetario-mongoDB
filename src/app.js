@@ -122,22 +122,25 @@ const runGraphQLServer = function(context) {
 
     Author: {
       recipes: async (parent, args, ctx, info) => {
-        const authorID = ObjectID(parent.id);
+        const authorID = parent._id;
+        console.log(authorID);
         const { client } = ctx;
         const db = client.db("recipe-book");
         const collection = db.collection("recipes");
-        const result = await collection.find({ author: authorID }).toArray();
+        const result = await collection
+          .find({ author: authorID})
+          .toArray();
         return result;
       }
     },
 
     Ingredient: {
       recipes: async (parent, args, ctx, info) => {
-        const recipeID = ObjectID(parent.id);
+        const ingredientID = parent._id;
         const { client } = ctx;
         const db = client.db("recipe-book");
         const collection = db.collection("recipes");
-        const result = await collection.find({ _id: recipeID }).toArray();
+        const result = await collection.find({ ingredients: ingredientID }).toArray();
         return result;
       }
     },
@@ -202,8 +205,8 @@ const runGraphQLServer = function(context) {
         const result = await collection.insertOne({
           title,
           description,
-          author,
-          ingredients,
+          author: ObjectID(author),
+          ingredients: ingredients.map(obj => ObjectID(obj)),
           date
         });
 
