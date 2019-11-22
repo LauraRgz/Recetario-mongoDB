@@ -56,14 +56,14 @@ const runGraphQLServer = function(context) {
         getIngredients: [Ingredient]
     }
     type Mutation{
-          addRecipe(title: String!, description: String!, author: ID!, ingredients: [ID]!): Recipe!
-          addAuthor(name: String!, email: String!): Author!
-          addIngredient(name: String!): Ingredient!
-          removeRecipe(id: ID!): String!
-          removeAuthor(id: ID!): String!
-          removeIngredient(id: ID!): String!
-          updateAuthor(id: ID!, name: String, email: String): String!
-          updateIngredient(id: ID!, name: String!): String!
+        addRecipe(title: String!, description: String!, author: ID!, ingredients: [ID]!): Recipe!
+        addAuthor(name: String!, email: String!): Author!
+        addIngredient(name: String!): Ingredient!
+        removeRecipe(id: ID!): String!
+        removeAuthor(id: ID!): String!
+        removeIngredient(id: ID!): String!
+        updateAuthor(id: ID!, name: String, email: String): String!
+        updateIngredient(id: ID!, name: String!): String!
         updateRecipe(id: ID!, title: String, description: String, ingredients: [ID] ): String!
     }
       `;
