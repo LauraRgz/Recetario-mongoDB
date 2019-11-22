@@ -42,6 +42,7 @@ You can access the app at 127.0.0.1:4000
 * getIngredient
 * getIngredients
 
+The usage tempates can be found [here](./queriesTemplates.md) .
 
 ## Built with
 * [graphql-yoga](https://www.npmjs.com/package/graphql-yoga)

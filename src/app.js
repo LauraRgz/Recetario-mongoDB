@@ -317,33 +317,52 @@ const runGraphQLServer = function(context) {
         const db = client.db("recipe-book");
         const collection = db.collection("authors");
 
-        const updateName = () => {
-          if (args.name) {
-            return new Promise((resolve, reject) => {
-              const result = collection.updateOne(
-                { _id: ObjectID(id) },
-                { $set: { name: args.name } }
-              );
-              resolve(result);
-            });
-          }
-        };
+        let jsonUpdate;
 
-        const updateEmail = () => {
-          if (args.email) {
-            return new Promise((resolve, reject) => {
-              const result = collection.updateOne(
-                { _id: ObjectID(id) },
-                { $set: { email: args.email } }
-              );
-              resolve(result);
-            });
+        if(args.name){
+          jsonUpdate = {
+            name: args.name,
+            ...jsonUpdate
           }
-        };
-        (async function() {
-          const asyncFunctions = [updateName(), updateEmail()];
-          await Promise.all(asyncFunctions);
-        })();
+        }
+
+        if(args.email){
+          jsonUpdate = {
+            email: args.email,
+            ...jsonUpdate
+          }
+        }
+        const result = await collection.updateOne( {_id: ObjectID(id)}, {$set: jsonUpdate});
+        if(result.modifiedCount > 0) return "ok"
+        return "kk";
+
+        // const updateName = () => {
+        //   if (args.name) {
+        //     return new Promise((resolve, reject) => {
+        //       const result = collection.updateOne(
+        //         { _id: ObjectID(id) },
+        //         { $set: { name: args.name } }
+        //       );
+        //       resolve(result);
+        //     });
+        //   }
+        // };
+
+        // const updateEmail = () => {
+        //   if (args.email) {
+        //     return new Promise((resolve, reject) => {
+        //       const result = collection.updateOne(
+        //         { _id: ObjectID(id) },
+        //         { $set: { email: args.email } }
+        //       );
+        //       resolve(result);
+        //     });
+        //   }
+        // };
+        // (async function() {
+        //   const asyncFunctions = [updateName(), updateEmail()];
+        //   await Promise.all(asyncFunctions);
+        // })();
         return "ok";
       },
 
@@ -391,7 +410,6 @@ const runGraphQLServer = function(context) {
         console.log(jsonUpdate)
         const result = await collection.updateOne( {_id: ObjectID(id)}, {$set: jsonUpdate});
         if(result.modifiedCount > 0) return "ok"
-        return "kk"
 
 
         // // const updateTitle = () => {
