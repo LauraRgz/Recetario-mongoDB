@@ -131,7 +131,6 @@ const runGraphQLServer = function(context) {
         const db = client.db("recipe-book");
         let collection = db.collection("authors");
         let result = await collection.findOne({ _id: authorID });
-
         return result;
       },
 
@@ -146,6 +145,7 @@ const runGraphQLServer = function(context) {
           .toArray();
         return result;
       },
+
       id: (parent, args, ctx, info) => {
         const result = parent._id;
         return result;
@@ -179,6 +179,7 @@ const runGraphQLServer = function(context) {
           .toArray();
         return result;
       },
+
       id: (parent, args, ctx, info) => {
         const result = parent._id;
         return result;
@@ -267,7 +268,7 @@ const runGraphQLServer = function(context) {
           const asyncFunctions = [deleteRecipe(), deleteAuthor()];
           const result = await Promise.all(asyncFunctions);
         })();
-        return "ok";
+        return "Author deleted";
       },
 
       removeIngredient: async (parent, args, ctx, info) => {
@@ -298,8 +299,7 @@ const runGraphQLServer = function(context) {
           const result = await Promise.all(asyncFunctions);
         })();
 
-        //const result = await collection.deleteOne({ _id: ObjectID(id) });
-        return "ok";
+        return "Ingredient deleted";
       },
       removeRecipe: async (parent, args, ctx, info) => {
         const { id } = args;
@@ -308,7 +308,7 @@ const runGraphQLServer = function(context) {
         const collection = db.collection("recipes");
 
         await collection.deleteOne({ _id: ObjectID(id) });
-        return "ok";
+        return "Recipe deleted";
       },
 
       updateAuthor: async (parent, args, ctx, info) => {
@@ -319,51 +319,25 @@ const runGraphQLServer = function(context) {
 
         let jsonUpdate;
 
-        if(args.name){
+        if (args.name) {
           jsonUpdate = {
             name: args.name,
             ...jsonUpdate
-          }
+          };
         }
 
-        if(args.email){
+        if (args.email) {
           jsonUpdate = {
             email: args.email,
             ...jsonUpdate
-          }
+          };
         }
-        const result = await collection.updateOne( {_id: ObjectID(id)}, {$set: jsonUpdate});
-        if(result.modifiedCount > 0) return "ok"
-        return "kk";
-
-        // const updateName = () => {
-        //   if (args.name) {
-        //     return new Promise((resolve, reject) => {
-        //       const result = collection.updateOne(
-        //         { _id: ObjectID(id) },
-        //         { $set: { name: args.name } }
-        //       );
-        //       resolve(result);
-        //     });
-        //   }
-        // };
-
-        // const updateEmail = () => {
-        //   if (args.email) {
-        //     return new Promise((resolve, reject) => {
-        //       const result = collection.updateOne(
-        //         { _id: ObjectID(id) },
-        //         { $set: { email: args.email } }
-        //       );
-        //       resolve(result);
-        //     });
-        //   }
-        // };
-        // (async function() {
-        //   const asyncFunctions = [updateName(), updateEmail()];
-        //   await Promise.all(asyncFunctions);
-        // })();
-        return "ok";
+        const result = await collection.updateOne(
+          { _id: ObjectID(id) },
+          { $set: jsonUpdate }
+        );
+        if (result.modifiedCount > 0) return "Author updated";
+        return "Failed to update author";
       },
 
       updateIngredient: async (parent, args, ctx, info) => {
@@ -376,7 +350,7 @@ const runGraphQLServer = function(context) {
           { _id: ObjectID(id) },
           { $set: { name: args.name } }
         );
-        return "ok";
+        return "Ingredient updated";
       },
 
       updateRecipe: async (parent, args, ctx, info) => {
@@ -387,74 +361,33 @@ const runGraphQLServer = function(context) {
 
         let jsonUpdate;
 
-        if(args.title){
+        if (args.title) {
           jsonUpdate = {
             title: args.title,
             ...jsonUpdate
-          }
+          };
         }
 
-        if(args.description){
+        if (args.description) {
           jsonUpdate = {
             description: args.description,
             ...jsonUpdate
-          }
+          };
         }
 
-        if(args.ingredients){
+        if (args.ingredients) {
           jsonUpdate = {
             ingredients: args.ingredients.map(obj => ObjectID(obj)),
             ...jsonUpdate
-          }
+          };
         }
-        console.log(jsonUpdate)
-        const result = await collection.updateOne( {_id: ObjectID(id)}, {$set: jsonUpdate});
-        if(result.modifiedCount > 0) return "ok"
-
-
-        // // const updateTitle = () => {
-        // //   if (args.title) {
-        // //     return  collection.updateOne(
-        // //       { _id: ObjectID(id) },
-        // //       { $set: { title: args.title } }
-        // //     );
-        // //   }
-        // // };
-
-        // // const updateDescription = () => {
-        // //   if (args.description) {
-        // //     return new Promise((resolve, reject) => {
-        // //       const result = collection.updateOne(
-        // //         { _id: ObjectID(id) },
-        // //         { $set: { name: args.description } }
-        // //       );
-        // //       resolve(result);
-        // //     });
-        // //   }
-        // // };
-
-        // const updateIngredients = () => {
-        //   if (args.ingredients) {
-        //     return new Promise((resolve, reject) => {
-        //       const result = collection.updateOne(
-        //         { _id: ObjectID(id) },
-        //         { $set: { ingredients: args.ingredients } }
-        //       );
-        //       resolve(result);
-        //     });
-        //   }
-        // };
-
-        // (async function() {
-        //   const asyncFunctions = [
-        //     updateTitle(),
-        //     updateDescription(),
-        //     updateIngredients()
-        //   ];
-        //   await Promise.all(asyncFunctions);
-        // })();
-
-        return "ok";
+        console.log(jsonUpdate);
+        const result = await collection.updateOne(
+          { _id: ObjectID(id) },
+          { $set: jsonUpdate }
+        );
+        if (result.modifiedCount > 0) return "Recipe updated";
+        return "Failed to update recipe";
       }
     }
   };
