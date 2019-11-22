@@ -3,6 +3,7 @@ import { GraphQLServer } from "graphql-yoga";
 
 import "babel-polyfill";
 import { rejects } from "assert";
+import { json } from "express";
 
 const usr = "Laura";
 const pwd = "Pabl11";
@@ -64,7 +65,7 @@ const runGraphQLServer = function(context) {
         removeIngredient(id: ID!): String!
         updateAuthor(id: ID!, name: String, email: String): String!
         updateIngredient(id: ID!, name: String!): String!
-        updateRecipe(id: ID!, title: String, description: String, ingredients: [ID] ): String!
+        updateRecipe(id: ID!, title: String, description: String, ingredients: [ID!] ): String!
     }
       `;
 
@@ -365,50 +366,75 @@ const runGraphQLServer = function(context) {
         const db = client.db("recipe-book");
         const collection = db.collection("recipes");
 
-        const updateTitle = () => {
-          if (args.title) {
-            return new Promise((resolve, reject) => {
-              const result = collection.updateOne(
-                { _id: ObjectID(id) },
-                { $set: { title: args.title } }
-              );
-              resolve(result);
-            });
-          }
-        };
+        let jsonUpdate;
 
-        const updateDescription = () => {
-          if (args.description) {
-            return new Promise((resolve, reject) => {
-              const result = collection.updateOne(
-                { _id: ObjectID(id) },
-                { $set: { name: args.description } }
-              );
-              resolve(result);
-            });
+        if(args.title){
+          jsonUpdate = {
+            title: args.title,
+            ...jsonUpdate
           }
-        };
+        }
 
-        const updateIngredients = () => {
-          if (args.ingredients) {
-            return new Promise((resolve, reject) => {
-              const result = collection.updateOne(
-                { _id: ObjectID(id) },
-                { $set: { ingredients: args.ingredients } }
-              );
-              resolve(result);
-            });
+        if(args.description){
+          jsonUpdate = {
+            description: args.description,
+            ...jsonUpdate
           }
-        };
+        }
 
-        (async function() {
-          const asyncFunctions = [
-            updateTitle(),
-            updateDescription(),
-            updateIngredients()
-          ];
-          await Promise.all(asyncFunctions);
-        })();
+        if(args.ingredients){
+          jsonUpdate = {
+            ingredients: args.ingredients.map(obj => ObjectID(obj)),
+            ...jsonUpdate
+          }
+        }
+        console.log(jsonUpdate)
+        const result = await collection.updateOne( {_id: ObjectID(id)}, {$set: jsonUpdate});
+        if(result.modifiedCount > 0) return "ok"
+        return "kk"
+
+
+        // // const updateTitle = () => {
+        // //   if (args.title) {
+        // //     return  collection.updateOne(
+        // //       { _id: ObjectID(id) },
+        // //       { $set: { title: args.title } }
+        // //     );
+        // //   }
+        // // };
+
+        // // const updateDescription = () => {
+        // //   if (args.description) {
+        // //     return new Promise((resolve, reject) => {
+        // //       const result = collection.updateOne(
+        // //         { _id: ObjectID(id) },
+        // //         { $set: { name: args.description } }
+        // //       );
+        // //       resolve(result);
+        // //     });
+        // //   }
+        // // };
+
+        // const updateIngredients = () => {
+        //   if (args.ingredients) {
+        //     return new Promise((resolve, reject) => {
+        //       const result = collection.updateOne(
+        //         { _id: ObjectID(id) },
+        //         { $set: { ingredients: args.ingredients } }
+        //       );
+        //       resolve(result);
+        //     });
+        //   }
+        // };
+
+        // (async function() {
+        //   const asyncFunctions = [
+        //     updateTitle(),
+        //     updateDescription(),
+        //     updateIngredients()
+        //   ];
+        //   await Promise.all(asyncFunctions);
+        // })();
 
         return "ok";
       }
