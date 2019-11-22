@@ -160,7 +160,7 @@ const runGraphQLServer = function(context) {
         const result = await collection.find({ author: authorID }).toArray();
         return result;
       },
-      
+
       id: (parent, args, ctx, info) => {
         const result = parent._id;
         return result;
@@ -321,7 +321,7 @@ const runGraphQLServer = function(context) {
             return new Promise((resolve, reject) => {
               const result = collection.updateOne(
                 { _id: ObjectID(id) },
-                { $set: {name: args.name} }
+                { $set: { name: args.name } }
               );
               resolve(result);
             });
@@ -333,7 +333,7 @@ const runGraphQLServer = function(context) {
             return new Promise((resolve, reject) => {
               const result = collection.updateOne(
                 { _id: ObjectID(id) },
-                { $set: {email: args.email} }
+                { $set: { email: args.email } }
               );
               resolve(result);
             });
@@ -351,10 +351,10 @@ const runGraphQLServer = function(context) {
         const { client } = ctx;
         const db = client.db("recipe-book");
         const collection = db.collection("ingredients");
-        
+
         await collection.updateOne(
           { _id: ObjectID(id) },
-          { $set: {name: args.name} }
+          { $set: { name: args.name } }
         );
         return "ok";
       },
@@ -370,7 +370,7 @@ const runGraphQLServer = function(context) {
             return new Promise((resolve, reject) => {
               const result = collection.updateOne(
                 { _id: ObjectID(id) },
-                { $set: {title: args.title} }
+                { $set: { title: args.title } }
               );
               resolve(result);
             });
@@ -382,7 +382,7 @@ const runGraphQLServer = function(context) {
             return new Promise((resolve, reject) => {
               const result = collection.updateOne(
                 { _id: ObjectID(id) },
-                { $set: {name: args.description} }
+                { $set: { name: args.description } }
               );
               resolve(result);
             });
@@ -394,7 +394,7 @@ const runGraphQLServer = function(context) {
             return new Promise((resolve, reject) => {
               const result = collection.updateOne(
                 { _id: ObjectID(id) },
-                { $set: {ingredients: args.ingredients} }
+                { $set: { ingredients: args.ingredients } }
               );
               resolve(result);
             });
@@ -402,16 +402,18 @@ const runGraphQLServer = function(context) {
         };
 
         (async function() {
-          const asyncFunctions = [updateTitle(), updateDescription(), updateIngredients()];
+          const asyncFunctions = [
+            updateTitle(),
+            updateDescription(),
+            updateIngredients()
+          ];
           await Promise.all(asyncFunctions);
         })();
-        
-        return "ok";
 
+        return "ok";
       }
     }
   };
-  
 
   const server = new GraphQLServer({ typeDefs, resolvers, context });
   const options = {
