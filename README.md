@@ -10,7 +10,7 @@
 
 ## :fork_and_knife: Introduction
 
-Recetario.mongoDB is a Node-JS app developed to manage recipes. It is possible to create authors, ingredients and recipes, as well as edit and delete them.
+Recetario-mongoDB is a Node-JS app developed to manage recipes. It is possible to create authors, ingredients and recipes, as well as edit and delete them.
 
 ## :gear: Setup
 
