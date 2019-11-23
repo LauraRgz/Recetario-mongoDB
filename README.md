@@ -32,26 +32,26 @@ You can access the app at  ```127.0.0.1:4000```
 
 ### Mutations
 
-- addRecipe
-- addAuthor
-- addIngredient
-- removeRecipe
-- removeAuthor
-- removeIngredient
-- updateAuthor
-- updateIngredient
-- updateRecipe
+- [addRecipe](./queriesTemplates.md#Add-Recipe)
+- [addAuthor](./queriesTemplates.md#Add-Author)
+- [addIngredient](./queriesTemplates.md#Add-Ingredient)
+- [removeRecipe](./queriesTemplates.md#Remove-Recipe)
+- [removeAuthor](./queriesTemplates.md#Remove-Author)
+- [removeIngredient](./queriesTemplates.md#Remove-Ingredient)
+- [updateAuthor](./queriesTemplates.md#Update-Author)
+- [updateIngredient](./queriesTemplates.md#Update-Ingredient)
+- [updateRecipe](./queriesTemplates.md#Update-Recipe)
 
 ### Queries
 
-- getAuthor
-- getAuthors
-- getRecipe
-- getRecipes
-- getIngredient
-- getIngredients
+- [getAuthor](./queriesTemplates.md#Author)
+- [getAuthors](./queriesTemplates.md#Show-Authors)
+- [getRecipe](./queriesTemplates.md#Recipe)
+- [getRecipes](./queriesTemplates.md#Show-Recipes)
+- [getIngredient](./queriesTemplates.md#Ingredient)
+- [getIngredients](./queriesTemplates.md#Show-ingredients)
 
-The usage tempates can be found [here](./queriesTemplates.md) .
+The usage tempates can be found [here](./queriesTemplates.md) or clicking on each function.
 
 ## :wrench: Built with
 
