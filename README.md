@@ -1,6 +1,6 @@
-#  :notebook: Recetario-mongoDB  
+# :notebook: Recetario-mongoDB  
 
-##  :memo: Table of contents
+## :memo: Table of contents
 
 - [Introduction](#Introduction)
 - [Setup](#Setup)
@@ -28,7 +28,7 @@ npm start
 
 You can access the app at  ```127.0.0.1:4000```
 
-##   :sparkles: Features
+## :sparkles: Features
 
 ### Mutations
 
