@@ -16,6 +16,8 @@ const url = "cluster0-eqbhg.gcp.mongodb.net/test?retryWrites=true&w=majority";
  * @param {string} url MongoDB Server url
  */
 
+/*Me comecto a la base de datos y devuelve una promesa (por ser asíncrona). 
+Cuando la romesa se resuelve, tiene el cliente*/
 const connectToDb = async function(usr, pwd, url) {
   const uri = `mongodb+srv://${usr}:${pwd}@${url}`;
   const client = new MongoClient(uri, {
@@ -23,11 +25,11 @@ const connectToDb = async function(usr, pwd, url) {
     useUnifiedTopology: true
   });
 
-  await client.connect();
+  await client.connect(); //Cuando se resuelva el connect, hago lo que viene después
   return client;
 };
 
-const runGraphQLServer = function(context) {
+const runGraphQLServer = function(context) { //Ejecuta el servidor GraphQL
   const typeDefs = `
     type Recipe{
         id: ID!
@@ -79,7 +81,7 @@ const runGraphQLServer = function(context) {
         const collection = db.collection("authors");
         const result = await collection.findOne({ _id: ObjectID(id) });
         return result;
-      },
+      }, 
 
       getAuthors: async (parent, args, ctx, info) => {
         const { client } = ctx;
@@ -392,7 +394,7 @@ const runGraphQLServer = function(context) {
     }
   };
 
-  const server = new GraphQLServer({ typeDefs, resolvers, context });
+  const server = new GraphQLServer({ typeDefs, resolvers, context }); //Pasamos el contexto para que el servidor del graphql acceda al cliente
   const options = {
     port: 4000
   };
